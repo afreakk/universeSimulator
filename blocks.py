@@ -4,6 +4,8 @@ import pygame.gfxdraw
 import math
 
 class Nothing:
+    def isFemale(self):
+        return self.female
     def __init__(self,x,y):
         self.x = x
         self.y = y
@@ -16,7 +18,8 @@ class Nothing:
         self.isBaby = False
         self.neighbours = None
         self.age = 0
-        self.ageCuttoff = pnoise1(timer.time)*300
+        self.ageCuttoff = pnoise1(timer.time)*30
+        self.female = False
     def isDead(self):
         return self.die
     def canEvolve(self):
@@ -43,7 +46,7 @@ class Nothing:
                 if x != 0 or y != 0:
                     self.neighbours.append(entitys[self.x + x][self.y + y])
     def initGenetics(self,x,y):
-        incrPix = 50.0
+        incrPix = 80.0
         value = pnoise2(float(x)/incrPix,float(y)/incrPix)
         self.gene = value
     def initGeneticsComplete(self,value):
@@ -56,21 +59,11 @@ class Nothing:
     def getSpace(self):
         return self.space
     def __del__(self):
-        del self.x
-        del self.y
-        del self.evolve
-        del self.nRange
-        del self.lifeCuttof
-        del self.mateCutoff
-        del self.die
-        del self.space
-        del self.isBaby
-    #    if self.neighbours != None:
-     #       del neighbours
-        del self.gene
-
+        pass
 cunt = 0
 class Life(Nothing):
+    def setFemale(self):
+        self.female = True
     def update(self):
         self.age +=1
         if self.age>self.ageCuttoff:
@@ -89,18 +82,21 @@ class Life(Nothing):
                 oponent = matingMate
                 highest = distance
                 matingMate = neighbour
-        dominant = self.getGene() if self.getGene()>matingMate.getGene() else matingMate.getGene()
-        nonDominant = self.getGene() if dominant == matingMate.getGene() else matingMate.getGene()
-        if oponent != None:
-            if self.getGene()> oponent.getGene():
-                oponent.die = True
-                self.__mate__(matingMate,highest,dominant,nonDominant)
-            else:
-                self.die = True
+        if matingMate != None:
+            dominant = self.getGene() if self.getGene()>matingMate.getGene() else matingMate.getGene()
+            nonDominant = self.getGene() if dominant == matingMate.getGene() else matingMate.getGene()
+            if oponent != None:
+                if self.getGene()> oponent.getGene():
+                    if not oponent.isFemale():
+                        oponent.die = True
+                    self.__mate__(matingMate,highest,dominant,nonDominant)
+                else:
+                    self.die = True
     def __mate__(self,matingMate,geneDifference,dominant,nonDominant):
         male = dominant+geneDifference
         female = nonDominant-geneDifference
-        babyGene = male if pnoise1(timer.time)>0.0 else female
+        desicion = pnoise1(timer.time)
+        babyGene = male if desicion >0.0 else female
         for spotsForBaby in self.neighbours:
             if spotsForBaby.space == True:
                 spotsForBaby.evolve = True
@@ -110,7 +106,7 @@ class Life(Nothing):
         global screen
         global pygame
         colorGene = max(min(self.getGene()+0.5,1.0),0.0)
-        red = int(colorGene*255)
-        green = int(255-colorGene*255)
-        selfColor   = (red,green,0)
+        red = int(255-colorGene*255)    #RED = FEMALE
+        blue = int(colorGene*255)       #blue = MALE
+        selfColor   = (red,0,blue)
         self.__drawPixel__(selfColor)

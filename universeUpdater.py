@@ -31,6 +31,8 @@ class UniverseUpdater():
                         gene = entitys[x][y].getGene()
                         entitys[x][y] = Life(x,y)
                         entitys[x][y].initGeneticsComplete(gene)
+                        if gene < 0.0:
+                            entitys[x][y].setFemale()
                     else:
                         entitys[x][y] = Life(x,y)
                         entitys[x][y].initGenetics(x,y)
