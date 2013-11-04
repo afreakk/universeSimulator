@@ -2,6 +2,7 @@ from globalVariables import *
 from noise import *
 import pygame.gfxdraw
 import math
+import random
 
 class Nothing:
     def isFemale(self):
@@ -18,7 +19,7 @@ class Nothing:
         self.isBaby = False
         self.neighbours = None
         self.age = 0
-        self.ageCuttoff = pnoise1(timer.time)*30
+        self.ageCuttoff = pnoise1(random.uniform(0.0,10.0))*100.0
         self.female = False
     def isDead(self):
         return self.die
@@ -87,15 +88,14 @@ class Life(Nothing):
             nonDominant = self.getGene() if dominant == matingMate.getGene() else matingMate.getGene()
             if oponent != None:
                 if self.getGene()> oponent.getGene():
-                    if not oponent.isFemale():
                         oponent.die = True
-                    self.__mate__(matingMate,highest,dominant,nonDominant)
+                        self.__mate__(matingMate,highest,dominant,nonDominant)
                 else:
                     self.die = True
     def __mate__(self,matingMate,geneDifference,dominant,nonDominant):
         male = dominant+geneDifference
         female = nonDominant-geneDifference
-        desicion = pnoise1(timer.time)
+        desicion = pnoise1(random.uniform(0.0,10.0))
         babyGene = male if desicion >0.0 else female
         for spotsForBaby in self.neighbours:
             if spotsForBaby.space == True:
