@@ -20,7 +20,7 @@ class Nothing:
         self.isBaby = False
         self.neighbours = None
         self.age = 0
-        self.ageCuttoff = pnoise1(random.uniform(0.0,10.0))*100.0
+        self.ageCuttoff = pnoise1(random.uniform(0.0,10.0))*1000.0
         self.female = False
     def isDead(self):
         return self.die

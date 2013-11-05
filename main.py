@@ -1,5 +1,6 @@
 from blocks import *
 from universeUpdater import *
+import time
 def drawUniverse():
     for x in range(int(width)):
         for y in range(int(height)):
@@ -12,11 +13,12 @@ def initEntitys():
             entitys[x][y].initGenetics(x,y)
 
 def keyHandling():
+    global done
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
     key=pygame.key.get_pressed()
-    if key[pygame.K_q]:
+    if key[pygame.K_ESCAPE]:
         done = True
 
 def gameLoop():
@@ -36,6 +38,6 @@ def main():
         universeUpdater.update()
         gameLoop()
         pygame.display.flip()
-        clock.tick(120)
+        time.sleep(0.02)
     pygame.quit()
 main()
