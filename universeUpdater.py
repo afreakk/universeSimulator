@@ -19,6 +19,7 @@ class UniverseUpdater():
         global entitys
         for x in range(self.xRange[0], self.xRange[1]):
             for y in range(self.yRange[0], self.yRange[1]):
+                entitys[x][y].updateNeighbours()
                 entitys[x][y].update()
                 if entitys[x][y].isDead() == True:
                     gene = entitys[x][y].getGene()
@@ -36,8 +37,6 @@ class UniverseUpdater():
                     else:
                         entitys[x][y] = Life(x,y)
                         entitys[x][y].initGenetics(x,y)
-                    entitys[x][y].initNeighbours()
-
     def __controlRange__(self):
         self.__incrementRange__(self.xRange)
         if self.xRange[1] >= int(width):

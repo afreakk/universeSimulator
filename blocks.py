@@ -7,6 +7,7 @@ import random
 class Nothing:
     def isFemale(self):
         return self.female
+
     def __init__(self,x,y):
         self.x = x
         self.y = y
@@ -34,31 +35,40 @@ class Nothing:
         value = self.getNoiseGene()
         if value > self.lifeCuttof-pnoise1(timer.time):
             self.evolve = True
+
     def __drawPixel__(self,color):
         for x in xrange(zoom):
             for y in xrange(zoom):
                 pygame.gfxdraw.pixel(screen,self.x*zoom+x,self.y*zoom+y,color)
+
     def draw(self):
         pass
-    def initNeighbours(self):
+
+    def updateNeighbours(self):
         self.neighbours = []
         for x in xrange(-self.nRange,self.nRange):
             for y in xrange(-self.nRange,self.nRange):
                 if x != 0 or y != 0:
                     self.neighbours.append(entitys[self.x + x][self.y + y])
+
     def initGenetics(self,x,y):
         incrPix = 80.0
         value = pnoise2(float(x)/incrPix,float(y)/incrPix)
         self.gene = value
+
     def initGeneticsComplete(self,value):
         self.gene = value
+
     def initInheritedGenes(self,value):
         self.gene = value
         self.isBaby = True
+
     def isItABaby(self):
         return self.isBaby
+
     def getSpace(self):
         return self.space
+
     def __del__(self):
         pass
 cunt = 0
@@ -68,11 +78,12 @@ class Life(Nothing):
     def update(self):
         self.age +=1
         if self.age>self.ageCuttoff:
-            self.die=True
+            self.die = self.chanceOfDeath()
         self.space = False
         value = self.getNoiseGene()
         self.__findMate__()
         pass
+
     def __findMate__(self):
         highest = 0.0
         oponent = None
@@ -88,10 +99,16 @@ class Life(Nothing):
             nonDominant = self.getGene() if dominant == matingMate.getGene() else matingMate.getGene()
             if oponent != None:
                 if self.getGene()> oponent.getGene():
-                        oponent.die = True
+                        oponent.die = self.chanceOfDeath()
                         self.__mate__(matingMate,highest,dominant,nonDominant)
                 else:
-                    self.die = True
+                    self.die = self.chanceOfDeath()
+
+    def chanceOfDeath(self):
+        if random.random() > 0.9:
+            return True
+        return False
+
     def __mate__(self,matingMate,geneDifference,dominant,nonDominant):
         male = dominant+geneDifference
         female = nonDominant-geneDifference

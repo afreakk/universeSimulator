@@ -10,9 +10,6 @@ def initEntitys():
         for y in range(int(height)):
             entitys[x][y] = Nothing(x,y)
             entitys[x][y].initGenetics(x,y)
-    for x in range(int(width)):
-        for y in range(int(height)):
-            entitys[x][y].initNeighbours()
 
 def keyHandling():
     for event in pygame.event.get():
